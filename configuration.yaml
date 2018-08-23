@@ -1,0 +1,472 @@
+homeassistant:
+  whitelist_external_dirs:
+    - "/config/snapshots"
+  name: Home
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: 94
+  unit_system: imperial
+  time_zone: UTC
+  customize: !include customize.yaml
+
+recorder:
+  purge_keep_days: 2
+
+frontend:
+  javascript_version: latest
+
+climate:
+  - platform: zwave
+
+http:
+  base_url: http://192.168.1.62:8123
+
+config:
+
+notify:
+  - name: Us
+    platform: group
+    services:
+      - service: !secret d_iphone
+      - service: !secret dc_iphone
+
+updater:
+
+discovery:
+
+history:
+
+logbook:
+
+sun:
+
+sensor: !include sensors.yaml
+
+tts:
+  - platform: google
+
+automation: !include_dir_merge_list automations
+
+zwave:
+  usb_path: /dev/ttyACM0
+  network_key: !secret zwave_key
+
+input_boolean:
+  alarm_armed:
+    name: Armed
+    initial: off
+    icon: mdi:car
+  sleeping:
+    name: Sleeping
+    initial: off
+    icon: mdi:hotel
+  boom_boom:
+    name: Boom Boom
+    initial: off
+    icon: mdi:car
+  vacation:
+    name: Vacation
+    initial: off
+    icon: mdi:car
+  downstairs_media_playing:
+    name: Downstairs Media
+    initial: off
+    icon: mdi:car
+  camera_status:
+    name: Inside Cameras
+    initial: off
+    icon: mdi:cctv
+
+binary_sensor:
+  - name: 'emily_home_bayesian'
+    platform: 'bayesian'
+    prior: 0.2
+    probability_threshold: 0.9
+    observations:
+      - entity_id: 'device_tracker.david_conleys_iphone'
+        prob_given_true: .95
+        platform: 'state'
+        to_state: 'home'
+      - entity_id: 'device_tracker.davidcoysiphone'
+        prob_given_true: 0.75
+        platform: 'state'
+        to_state: 'home'
+  - name: 'david_home_bayesian'
+    platform: 'bayesian'
+    prior: 0.2
+    probability_threshold: 0.9
+    observations:
+      - entity_id: 'device_tracker.davids_iphone'
+        prob_given_true: 0.95
+        platform: 'state'
+        to_state: 'home'
+      - entity_id: 'device_tracker.davidsiphone'
+        prob_given_true: 0.75
+        platform: 'state'
+        to_state: 'home'
+
+shell_command:
+  living_turn_off: !secret living_turn_off_url
+  living_turn_on: !secret living_turn_on_url
+  dining_turn_off: !secret dining_turn_off_url
+  dining_turn_on: !secret dining_turn_on_url
+  dining_turn_on_right: !secret dining_turn_on_right_url
+  restart_zoneminder: !secret restart_zoneminder
+  stop_zoneminder: !secret stop_zoneminder
+
+zoneminder:
+  host: 192.168.1.8
+  path: /zm/
+  path_zms: /zm/cgi-bin/nph-zms
+  username: admin
+  password: !secret encrypt_password
+
+camera:
+  - platform: zoneminder
+  - platform: local_file
+    file_path: /config/snapshots/doorbell.jpg
+
+script:
+  foscam_off:
+    sequence:
+    - service: shell_command.living_turn_off
+    - service: shell_command.dining_turn_off
+  foscam_on:
+    sequence:
+    - service: shell_command.living_turn_on
+    - service: shell_command.dining_turn_on
+  dining_on_right:
+    sequence:
+    - service: shell_command.dining_turn_on_right
+  sleeping_on:
+    sequence:
+      - service: input_boolean.turn_on
+        data:
+          entity_id: input_boolean.sleeping
+  homearm:
+    alias: Home Arm
+    sequence:
+        service: alarm_control_panel.alarm_arm_home
+  disarm:
+    alias: Disarm
+    sequence:
+        service: alarm_control_panel.alarm_disarm
+
+zone: !include zones.yaml
+
+group:
+  home:
+    view: yes
+    entities:
+      - input_number.downstairs_hvac
+      - input_number.upstairs_hvac
+      - sensor.we_home
+      - sun.sun
+      - group.motion
+      - group.perimeter
+      - group.fire
+      - device_tracker.david_conleys_iphone
+      - device_tracker.davids_iphone
+      - input_boolean.alarm_armed
+      - lock.schlage_be469nxcen_touchscreen_deadbolt_locked
+      - sensor.linear_tbz48_temperature
+      - sensor.linear_tbz48_temperature_2
+      - sensor.schlage_be469nxcen_touchscreen_deadbolt_access_control
+      - alarm_control_panel.partition_1
+      - binary_sensor.emily_home
+      - binary_sensor.david_home
+      - input_boolean.sleeping
+      - input_boolean.alarm_armed
+      - input_boolean.heat
+      - input_boolean.ac
+      - input_boolean.vacation
+      - input_boolean.downstairs_media_playing
+      - script.disarm
+      - script.homearm
+      - script.dining_on_right
+      - script.foscam_off
+      - script.foscam_on
+      - sensor.downstairs_thermostat_temperature
+      - sensor.upstairs_thermostat_temperature
+      - automation.arm_alarm_if_we_leave
+  sensor_node_1_card:
+    name: Master
+    entities:
+      - sensor.sn1_temperature
+      - sensor.sn1_humidity
+      - sensor.sn1_pir
+      - light.sn1_led
+  sensor_node_2_card:
+    name: Nursery
+    entities:
+      - sensor.sn2_temperature
+      - sensor.sn2_humidity
+      - sensor.sn2_pir
+  sensor_node_3_card:
+    name: Guest
+    entities:
+      - sensor.sn3_temperature
+      - sensor.sn3_humidity
+      - sensor.sn3_pir
+  sensor_node_4_card:
+    name: Living Room
+    entities:
+      - sensor.sn4_temperature
+      - sensor.sn4_humidity
+      - sensor.sn4_pir
+  sensor_node_5_card:
+    name: Office
+    entities:
+      - sensor.sn5_temperature
+      - sensor.sn5_humidity
+      - sensor.sn5_pir
+
+  lights:
+    name: Lights
+    view: yes
+    entities:
+      - group.dining_lights
+      - group.living_lights
+      - group.led_strips
+      - group.lights
+      - group.master_bedroom_lights
+  cameras:
+    name: Cameras
+    view: yes
+    entities:
+      - camera.living_room
+      - camera.foyer
+      - camera.front_door
+      - camera.driveway
+      - camera.back_door
+      - sensor.living_room_status
+      - sensor.living_room_events
+      - sensor.foyer_status
+      - sensor.foyer_events
+      - sensor.front_door_status
+      - sensor.front_door_events
+      - sensor.driveway_status
+      - sensor.driveway_events
+      - sensor.back_door_status
+      - sensor.back_door_events
+      - sensor.rest_sensor
+  motion:
+    name: Motion Sensors
+    entities:
+      - binary_sensor.garage_motion_sensor
+      - binary_sensor.dining_motion_sensor
+      - binary_sensor.Sliding_Motion
+      - sensor.garage_multi_motion
+  living_motion:
+    name: Motion Sensors
+    entities:
+      - binary_sensor.garage_motion_sensor
+      - binary_sensor.Sliding_Motion
+  perimeter:
+    name: Perimeter
+    entities:
+      - binary_sensor.Windows
+      - binary_sensor.Front_Door
+      - binary_sensor.sliding_door_sensor
+      - binary_sensor.Glassbreak
+      - binary_sensor.Main_Fire
+      - sensor.schlage_be469nxcen_touchscreen_deadbolt_burglar_15_10
+      - binary_sensor.garage_tilt_opener
+      - binary_sensor.garage_door_tilt_sensor
+
+      - binary_sensor.window_next_to_sliding_door_sensor
+  Fire:
+    name: Fire
+    entities:
+      - sensor.master_status_smoke_co_alarm
+      - sensor.mud_room_status_smoke_co_alarm
+      - sensor.nursery_status_smoke_co_alarm
+  alarm:
+    name: Alarm Away
+    entities:
+      - zwave.garage_motion
+      - zwave.ecolink_pir_motion_sensor
+      - binary_sensor.Sliding_Motion
+      - binary_sensor.Windows
+      - binary_sensor.Front_Door
+      - zwave.ecolink_doorwindow_sensor
+      - binary_sensor.Glassbreak
+      - binary_sensor.Main_Fire
+      - sensor.schlage_be469nxcen_touchscreen_deadbolt_burglar_15_10
+  alarm_stay:
+    name: Alarm Stay
+    entities:
+      - binary_sensor.Sliding_Motion
+      - binary_sensor.Windows
+      - binary_sensor.Front_Door
+      - zwave.ecolink_doorwindow_sensor
+      - binary_sensor.Glassbreak
+      - binary_sensor.Main_Fire
+      - sensor.schlage_be469nxcen_touchscreen_deadbolt_burglar_15_10
+  climate:
+    name: climate
+    view: yes
+    entities:
+      - climate.upstairs_thermostat_cooling_1
+      - climate.downstairs_thermostat_cooling_1
+      - climate.upstairs_thermostat_heating_1
+      - climate.downstairs_thermostat_heating_1
+      - sensor.living_room_multi_temperature
+      - sensor.living_room_multi_relative_humidity
+      - group.sensor_node_1_card
+      - group.sensor_node_2_card
+      - group.sensor_node_3_card
+      - group.sensor_node_4_card
+      - group.sensor_node_5_card
+  master:
+    name: Master
+    view: yes
+    entities:
+      - light.6001948a4fa2_192168148
+      - input_boolean.boom_boom
+  dining_lights:
+    name: Dining Room Lights
+    entities:
+      - switch.foyer_light_switch
+      - switch.dining_light_switch
+      - switch.foyer_lamp
+  garage_doors:
+    name: Garage Doors
+    entities:
+      - binary_sensor.garage_tilt_opener
+      - binary_sensor.garage_door_tilt_sensor
+  living_lights:
+    name: Living Room Lights
+    entities:
+      - switch.living_room_light_switch
+      - light.level
+      - switch.living_room_lamp
+  master_bedroom_lights:
+    name: Master Bedroom Lights
+    entities:
+      - switch.davids_lamp
+      - switch.emilys_lamp
+  led_strips:
+    name: LED Strips
+    entities:
+      - light.60019439ee75_192168143
+      - light.a020a61cfc62_192168141
+  bed_led:
+    name: Bed LED Strip
+      - light.6001948a4fa2_192168148
+
+envisalink:
+  host: 192.168.1.60
+  panel_type: HONEYWELL
+  user_name: user
+  password: !secret envisalink_password
+  code: !secret envisalink_code
+  evl_version: 4
+  keepalive_interval: 60
+  zonedump_interval: 30
+  zones:
+    01:
+      name: 'Slider'
+      type: 'opening'
+    03:
+      name: 'Front Door'
+      type: 'opening'
+    04:
+      name: 'Sliding Motion'
+      type: 'motion'
+    05:
+      name: 'Windows'
+      type: 'opening'
+    09:
+      name: 'Glassbreak'
+      type: 'sound'
+    10:
+      name: 'Main Fire'
+      type: 'smoke'
+  partitions:
+    1:
+      name: 'Partition 1'
+
+device_tracker:
+  - platform: geofency
+  - platform: netgear
+    host: 192.168.1.38
+    username: admin
+    password: !secret device_tracker_password
+    interval_seconds: 10
+    consider_home: 180
+    track_new_devices: yes
+  # - platform: bluetooth_tracker
+
+ios:
+
+light:
+  - platform: flux_led
+    automatic_add: True
+  - platform: mqtt_json
+    name: "SN1 LED"
+    state_topic: "bruh/sensornode1"
+    command_topic: "bruh/sensornode1/set"
+    brightness: true
+    flash: true
+    rgb: true
+    optimistic: false
+    qos: 0
+  - platform: group
+    name: Downstairs LED
+    entities:
+      - light.60019439ee75_192168143
+      - light.a020a61cfc62_192168141
+  - platform: group
+    name: Bed LED
+    entities:
+      - light.6001948a4fa2_192168148
+switch:
+  - platform: rpi_rf
+    gpio: 17
+    switches:
+      emilys_lamp:
+        protocol: 1
+        pulselength: 178
+        code_on: 1070387
+        code_off: 1070396
+      davids_lamp:
+        protocol: 1
+        pulselength: 178
+        code_on: 1070531
+        code_off: 1070540
+      foyer_lamp:
+        protocol: 1
+        pulselength: 178
+        code_on: 1070851
+        code_off: 1070860
+      living_room_lamp:
+        protocol: 1
+        pulselength: 178
+        code_on: 1072387
+        code_off: 1072396
+      master_outlet_fan:
+        protocol: 1
+        pulselength: 178
+        code_on: 1078531
+        code_off: 1078540
+
+media_player:
+  - platform: spotify
+    client_id: !secret spotify_client_id
+    client_secret: !secret spotify_client_secret
+
+hassio:
+
+panel_iframe:
+  configurator:
+    title: Configurator
+    icon: mdi:wrench
+    url: http://192.168.1.62:3218
+
+mqtt:
+  broker: core-mosquitto
+  username: admin
+  password: !secret encrypt_password
+
+cloud:

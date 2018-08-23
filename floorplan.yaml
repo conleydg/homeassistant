@@ -1,0 +1,159 @@
+name: Demo Floorplan
+image: /local/custom_ui/floorplan/floorplan.svg
+stylesheet: /local/custom_ui/floorplan/floorplan.css
+hide_app_toolbar:
+groups:
+  - name: Lights
+    entities:
+      - switch.living_room_lamp
+      - switch.living_room_light_switch
+      - switch.dining_light_switch
+      - switch.foyer_lamp
+      - switch.foyer_light_switch
+      - switch.davids_lamp
+      - switch.emilys_lamp
+    action:
+      service: toggle
+    states:
+      - state: 'on'
+        class: 'light-on'
+  - name: foscam_on
+    entities:
+      - script.foscam_on
+    action:
+      domain: script
+      service: foscam_on
+  - name: foscam_off
+    entities:
+      - script.foscam_off
+    action:
+      domain: script
+      service: foscam_off
+  - name: home_arm
+    entities:
+      - script.homearm
+    action:
+      domain: script
+      service: homearm
+  - name: disarm
+    entities:
+      - script.disarm
+    action:
+      domain: script
+      service: disarm
+  - name: Binary Sensors
+    entities:
+       - binary_sensor.garage_motion_sensor
+       - binary_sensor.sliding_motion
+       - binary_sensor.dining_motion_sensor
+       - sensor.garage_multi_motion
+       - sensor.sn1_pir
+       - sensor.sn2_pir
+       - sensor.sn3_pir
+       - sensor.sn4_pir
+       - sensor.sn5_pir
+       - binary_sensor.glassbreak
+    action:
+    states:
+      - state: 'on'
+        class: 'alarm-armed'
+  - name: Camera Images
+    entities:
+      - camera.living_room
+      - camera.driveway.image
+      - camera.foyer
+      - camera.front_door
+      - camera.back_door
+      - camera.local_file
+    camera_image_template: '${entity.attributes.entity_picture}'
+  - name: Doors
+    entities:
+       - binary_sensor.front_door
+       - binary_sensor.garage_door_tilt_sensor
+       - binary_sensor.garage_tilt_opener
+       - binary_sensor.sliding_door_sensor
+    states:
+      - state: 'off'
+        class: 'info-background'
+      - state: 'on'
+        class: 'warning-background'
+  - name: Temps
+    entities:
+       - sensor.living_room_multi_temperature
+       - sensor.downstairs_thermostat_temperature
+       - sensor.upstairs_thermostat_temperature
+       - sensor.sn4_temperature
+       - sensor.sn1_temperature
+       - sensor.sn2_temperature
+       - sensor.sn3_temperature
+       - sensor.sn5_temperature
+    text_template: '${entity.state ? entity.state : "unknown"}'
+  - name: LED
+    entities:
+       - light.downstairs_led
+       - light.a020a61cfc62_192168141
+       - light.level
+       - light.6001948a4fa2_192168148
+    states:
+      - state: 'on'
+        class: 'light-on'
+      # - state: 'off'
+      #   class: 'light-off'
+  - name: Climate
+    entities:
+       - climate.downstairs_thermostat_cooling_1
+       - climate.downstairs_thermostat_heating_1
+       - climate.upstairs_thermostat_cooling_1
+       - climate.upstairs_thermostat_heating_1
+  - name: Alarm
+    entities:
+       - sensor.partition_1_keypad
+       - alarm_control_panel.partition_1
+    text_template: '${entity.state ? entity.state : "unknown"}'
+    states:
+      - state: 'armed_home'
+        class: 'alarm-armed'
+      - state: 'armed_home'
+        class: 'alarm-armed'
+  - name: Lock
+    entities:
+       - lock.schlage_be469nxcen_touchscreen_deadbolt_locked
+    states:
+      - state: 'locked'
+        class: 'alarm-disarmed'
+      - state: 'unlocked'
+        class: 'alarm-armed'
+  - name: We home
+    entities:
+       - sensor.david_home
+       - sensor.emily_home
+       - sensor.we_home
+    states:
+      - state: 'True'
+        class: 'alarm-disarmed'
+      - state: 'Flase'
+        class: 'light-off'
+  - name: Doorbell
+    entities:
+       - binary_sensor.doorbell_sensor
+    states:
+      - state: 'on'
+        class: 'light-off'
+      - state: 'off'
+        class: 'light-on'
+  - name: Sleeping
+    entities:
+       - input_boolean.sleeping
+    states:
+      - state: 'on'
+        # class: 'alarm-armed'
+        class: 'light-off'
+      - state: 'off'
+        # class: 'light-off'
+        class: 'alarm-armed'
+    action:
+      service: toggle
+  - name: Location
+    entities:
+      - device_tracker.david_conleys_iphone
+      - device_tracker.davids_iphone

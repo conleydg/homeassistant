@@ -1,0 +1,22 @@
+#
+# Main arguments, all optional
+#
+title: Front Door
+widget_dimensions: [120, 120]
+widget_margins: [5, 5]
+columns: 8
+global_parameters:
+    use_comma: 0
+    precision: 1
+    use_hass_icon: 1
+    namespace: default
+
+front_door_camera:
+    widget_type: camera
+    entity_picture: !secret front_door_stream
+    refresh: 5
+
+layout:
+  - include: camera_nav
+  - front_door_camera(3x2)
+  - include: nav

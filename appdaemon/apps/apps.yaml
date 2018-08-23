@@ -1,0 +1,76 @@
+# Lights
+downstairs_led_motion:
+  module: downstairs_leds
+  class: HelloWorld
+  motion: group.motion
+  perimeter: group.perimeter
+  office_motion: sensor.sn5_pir
+  sun: sun.sun
+  constrain_input_boolean: input_boolean.alarm_armed.off
+living_room_lights:
+  module: lights
+  class: Lights
+  sensor: group.living_motion
+  light: switch.living_room_lamp
+  constrain_input_boolean: input_boolean.alarm_armed.off
+media_turn_off_lights:
+  module: lights
+  class: MediaTurnOffLights
+  sensor: media_player.living_room
+  light: light.level
+dining_lights_motion:
+  module: lights
+  class: Lights
+  sensor: binary_sensor.dining_motion_sensor
+  light: group.dining_lights
+  constrain_input_boolean: input_boolean.alarm_armed.off
+sleeping_lights_off:
+  module: lights
+  class: SleepingLights
+  living_room: light.level
+  foyer: switch.foyer_light_switch
+  constrain_input_boolean: input_boolean.sleeping
+
+doorbell_rang:
+  module: doorbell
+  class: Doorbell
+  sensor: binary_sensor.doorbell_sensor
+
+# Alarm
+alarm:
+  module: perimeter_notify
+  class: notify_perimeter
+  sliding_door: binary_sensor.sliding_door_sensor
+  windows: binary_sensor.windows
+  garage_motion: sensor.garage_multi_motion
+  window_next_to_sliding_door: binary_sensor.window_next_to_sliding_door_sensor
+  front_door: binary_sensor.front_door
+  front_door_access: sensor.schlage_be469nxcen_touchscreen_deadbolt_access_control
+  garage_doors: group.garage_doors
+  door_alarm: sensor.schlage_be469nxcen_touchscreen_deadbolt_burglar
+  alarm_partition: alarm_control_panel.partition_1
+  input_alarm: input_boolean.alarm_armed
+  glassbreak: binary_sensor.glassbreak
+  mud_room_fire: sensor.mud_room_status_smoke_co_alarm
+  nursery_fire: sensor.nursery_status_smoke_co_alarm
+  master_fire: sensor.master_status_smoke_co_alarm
+  main_fire: binary_sensor.main_fire
+
+set_alarm_status:
+  module: alarm
+  class: Status
+  alarm_input: input_boolean.alarm_armed
+  alarm_partition: alarm_control_panel.partition_1
+  door_access: sensor.schlage_be469nxcen_touchscreen_deadbolt_access_control
+
+# Sleeping
+set_sleeping_status:
+  module: sleeping
+  class: Sleeping
+  sleeping_input: input_boolean.sleeping
+
+# Home Away Status
+set_away_status:
+  module: home_away
+  class: HomeAway
+  we_home: sensor.we_home

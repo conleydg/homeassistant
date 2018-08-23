@@ -1,0 +1,30 @@
+#
+# Main arguments, all optional
+#
+title: Doorbell Panel
+widget_dimensions: [120, 120]
+widget_margins: [5, 5]
+columns: 8
+global_parameters:
+    use_comma: 0
+    precision: 1
+    use_hass_icon: 1
+    namespace: default
+
+front_door_camera:
+    widget_type: camera
+    entity_picture: !secret front_door_stream
+    refresh: 1
+
+doorbell_camera:
+    title: Doorbell
+    widget_type: camera
+    entity_picture: !secret doorbell_camera_stream
+    refresh: 5
+
+layout:
+ - front_door_camera(4x4), doorbell_image(4x4)
+ -
+ -
+ -
+ - include: nav

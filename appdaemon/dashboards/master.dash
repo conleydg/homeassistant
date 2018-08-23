@@ -1,0 +1,97 @@
+#
+# Main arguments, all optional
+#
+title: Master & Nursery Panel
+widget_dimensions: [120, 120]
+widget_margins: [5, 5]
+columns: 8
+global_parameters:
+    use_comma: 0
+    precision: 1
+    use_hass_icon: 1
+    namespace: default
+
+
+master_title:
+    widget_type: sensor
+    title: Master
+
+nursery_title:
+    widget_type: sensor
+    title: Nursery
+
+master_temperature:
+    widget_type: sensor
+    title: Master
+    units: "&deg;F"
+    precision: 0
+    entity: sensor.sn1_temperature
+
+master_motion:
+    widget_type: binary_sensor
+    title: Motion
+    entity: sensor.sn1_pir
+
+master_fan:
+    widget_type: switch
+    title: Fan
+    entity: switch.master_outlet_fan
+    icon_on: mdi-fan
+    icon_off: mdi-fan-off
+
+emilys_lamp:
+    widget_type: switch
+    title: Emily's
+    entity: switch.emilys_lamp
+    icon_on: mdi-lamp
+    icon_off: mdi-lamp
+
+davids_lamp:
+    widget_type: switch
+    title: David's
+    entity: switch.davids_lamp
+    icon_on: mdi-lamp
+    icon_off: mdi-lamp
+
+bed_led:
+    widget_type: light
+    title: Bed Lights
+    entity: light.6001948a4fa2_192168148
+    icon_on: mdi-lamp
+    icon_off: mdi-lamp
+    on_attributes:
+      brightness: 200
+      rgb_color: 168,198,255
+
+bed_led_red:
+    widget_type: light
+    title: Bed Lights Red
+    entity: light.6001948a4fa2_192168148
+    icon_on: mdi-lamp
+    icon_off: mdi-lamp
+    on_attributes:
+      brightness: 100
+      rgb_color: 255, 0, 0
+
+
+boom_boom_input:
+    widget_type: input_boolean
+    entity: input_boolean.boom_boom
+    title: Boom Boom
+    icon_on: mdi-nuke
+    icon_off: mdi-nuke
+
+nursery_temperature:
+    widget_type: sensor
+    title: Nursery
+    units: "&deg;F"
+    precision: 0
+    entity: sensor.sn2_temperature
+
+
+layout:
+    - master_title(4x1), nursery_title(4x1)
+    - master_temperature, emilys_lamp, davids_lamp, bed_led, nursery_temperature
+    - master_fan, master_motion, boom_boom_input, bed_led_red
+    -
+    - include: nav

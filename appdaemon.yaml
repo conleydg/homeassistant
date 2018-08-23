@@ -1,0 +1,12 @@
+appdaemon:
+  threads: 10
+  plugins:
+    HASS:
+      type: hass
+      ha_url: http://192.168.1.62:8123/
+      ha_key: <some_key>
+hadashboard:
+  dash_url: http://192.168.1.21:5050
+  dash_ssl_certificate: /etc/letsencrypt/live/somehost/fullchain.pem
+  dash_ssl_key: /etc/letsencrypt/live/somehost/privkey.pem
+  dash_password: !secret envisalink_password

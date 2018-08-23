@@ -1,0 +1,67 @@
+#
+# Main arguments, all optional
+#
+title: Temp Panel
+widget_dimensions: [120, 120]
+widget_margins: [5, 5]
+columns: 8
+global_parameters:
+    use_comma: 0
+    precision: 1
+    use_hass_icon: 1
+    namespace: default
+
+
+label:
+    widget_type: label
+    text: Hello World
+
+living_temperature:
+    widget_type: sensor
+    title: Living Room
+    units: "&deg;F"
+    precision: 0
+    entity: sensor.sn4_temperature
+
+garage_temperature:
+    widget_type: sensor
+    title: Garage
+    units: "&deg;F"
+    precision: 0
+    entity: sensor.living_room_multi_temperature
+
+nursery_temperature:
+    widget_type: sensor
+    title: Nursery
+    units: "&deg;F"
+    precision: 0
+    entity: sensor.sn2_temperature
+
+master_temperature:
+    widget_type: sensor
+    title: Master
+    units: "&deg;F"
+    precision: 0
+    entity: sensor.sn1_temperature
+
+guest_temperature:
+    widget_type: sensor
+    title: Guest
+    units: "&deg;F"
+    precision: 0
+    entity: sensor.sn3_temperature
+
+office_temperature:
+      widget_type: sensor
+      title: Office
+      units: "&deg;F"
+      precision: 0
+      entity: sensor.sn5_temperature
+
+
+layout:
+    - living_temperature, garage_temperature, nursery_temperature, master_temperature, guest_temperature, office_temperature
+    - climate.upstairs_thermostat_cooling_1, climate.upstairs_thermostat_heating_1, climate.downstairs_thermostat_cooling_1, climate.downstairs_thermostat_heating_1
+    -
+    -
+    - include: nav

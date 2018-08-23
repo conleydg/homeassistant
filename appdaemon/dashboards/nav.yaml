@@ -1,0 +1,56 @@
+#
+# Main arguments, all optional
+#
+title: NavPanel
+widget_dimensions: [120, 120]
+widget_margins: [5, 5]
+columns: 8
+
+label:
+    widget_type: label
+    text: Hello World
+
+to_temps:
+    widget_type: navigate
+    dashboard: temps
+    title: Temps
+    icon_inactive: mdi-thermometer
+
+to_main:
+    widget_type: navigate
+    dashboard: home
+    title: Home
+    icon_active: mdi-home-assistant
+    icon_inactive: mdi-home-assistant
+    icon_style: "fill:#ea4b82"
+    icon_style_inactive: "fill:#ea4b82"
+
+
+to_cameras:
+    widget_type: navigate
+    dashboard: cameras
+    title: Cameras
+    icon_inactive: mdi-camera
+
+doorbell:
+    widget_type: navigate
+    dashboard: doorbell
+    title: Doorbell
+    icon_inactive: mdi-bell
+
+to_master:
+    widget_type: navigate
+    dashboard: master
+    title: Master & Nursery
+
+clock:
+  widget_type: clock
+  widget_style: "background: white"
+  date_style: "color: black"
+  time_style: "color: green"
+
+reload:
+    widget_type: reload
+
+layout:
+    - to_main, to_master, to_temps, clock(2x1), to_cameras, doorbell, reload

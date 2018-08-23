@@ -1,0 +1,208 @@
+  - platform: zoneminder
+    include_archived: false
+  - platform: rest
+    resource: http://192.168.1.8/zm/api/monitors/alarm/id:2/command:status.json
+    usernam: admin
+    password: !secret encrypt_password
+    authentication: digest
+  - platform: mqtt
+    state_topic: "bruh/sensornode1"
+    name: "SN1 Humidity"
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.humidity | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode1"
+    name: "SN1 PIR"
+    value_template: '{{ value_json.motion }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode1"
+    name: "SN1 Temperature"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.temperature | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode1"
+    name: "SN1 Real Feel"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.heatIndex | round(1) }}'
+
+  - platform: mqtt
+    state_topic: "bruh/sensornode2"
+    name: "SN2 Humidity"
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.humidity | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode2"
+    name: "SN2 PIR"
+    value_template: '{{ value_json.motion }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode2"
+    name: "SN2 Temperature"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.temperature | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode2"
+    name: "SN2 Real Feel"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.heatIndex | round(1) }}'
+
+  - platform: mqtt
+    state_topic: "bruh/sensornode3"
+    name: "SN3 Humidity"
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.humidity | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode3"
+    name: "SN3 PIR"
+    value_template: '{{ value_json.motion }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode3"
+    name: "SN3 Temperature"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.temperature | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode3"
+    name: "SN3 Real Feel"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.heatIndex | round(1) }}'
+
+  - platform: mqtt
+    state_topic: "bruh/sensornode4"
+    name: "SN4 Humidity"
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.humidity | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode4"
+    name: "SN4 PIR"
+    value_template: '{{ value_json.motion }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode4"
+    name: "SN4 Temperature"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.temperature | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode4"
+    name: "SN4 Real Feel"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.heatIndex | round(1) }}'
+
+  - platform: mqtt
+    state_topic: "bruh/sensornode5"
+    name: "SN5 Humidity"
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.humidity | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode5"
+    name: "SN5 PIR"
+    value_template: '{{ value_json.motion }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode5"
+    name: "SN5 Temperature"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.temperature | round(1) }}'
+  - platform: mqtt
+    state_topic: "bruh/sensornode5"
+    name: "SN5 Real Feel"
+    unit_of_measurement: "°F"
+    value_template: '{{ value_json.heatIndex | round(1) }}'
+  - platform: template
+    sensors:
+      emily_home:
+        value_template: >-
+          {%- if is_state('device_tracker.david_conleys_iphone', "home")
+          or is_state('device_tracker.davidcoysiphone', "home")
+              -%}
+          True
+          {%- else -%}
+          False
+          {%- endif %}
+      david_home:
+        value_template: >-
+          {%- if is_state('device_tracker.davids_iphone', "home")
+          or is_state('device_tracker.davidsiphone', "home")
+              -%}
+          True
+          {%- else -%}
+          False
+          {%- endif %}
+      we_home:
+        value_template: >-
+          {%- if is_state('device_tracker.david_conleys_iphone', "home")
+          or is_state('device_tracker.davidcoysiphone', "home")
+          or is_state('device_tracker.davidsiphone', "home")
+          or is_state('device_tracker.davids_iphone', "home")
+              -%}
+          True
+          {%- else -%}
+          False
+          {%- endif %}
+        entity_id:
+          - device_tracker.david_conleys_iphone
+          - device_tracker.davidcoysiphone
+          - device_tracker.davids_iphone
+          - device_tracker.davidsiphone
+      master_status_smoke_co_alarm:
+        value_template: >-
+            {%- if is_state('sensor.master_bedroom_fire_alarm_type', '13') %}
+                Idle
+            {%- elif is_state('sensor.master_bedroom_fire_alarm_type', '1') %}
+                Fire Detected
+            {%- elif is_state('sensor.master_bedroom_fire_alarm_type', '2') %}
+                Carbon Monoxide Detected
+            {%- elif is_state('sensor.master_bedroom_fire_alarm_type', '12') %}
+                Alarm Testing
+            {% else %}
+                Unknown
+            {%- endif %}
+        friendly_name: 'Master Smoke/CO Alarm'
+      mud_room_status_smoke_co_alarm:
+        value_template: >-
+            {%- if is_state('sensor.first_alert_zcombo_smoke_and_carbon_monoxide_detector_alarm_type', '13') %}
+                Idle
+            {%- elif is_state('sensor.first_alert_zcombo_smoke_and_carbon_monoxide_detector_alarm_type', '1') %}
+                Fire Detected
+            {%- elif is_state('sensor.first_alert_zcombo_smoke_and_carbon_monoxide_detector_alarm_type', '2') %}
+                Carbon Monoxide Detected
+            {%- elif is_state('sensor.first_alert_zcombo_smoke_and_carbon_monoxide_detector_alarm_type', '12') %}
+                Alarm Testing
+            {% else %}
+                Unknown
+            {%- endif %}
+        friendly_name: 'Mud Room Smoke/CO Alarm'
+      nursery_status_smoke_co_alarm:
+        value_template: >-
+            {%- if is_state('sensor.nursery_fire_co_alarm_type', '13') %}
+                Idle
+            {%- elif is_state('sensor.nursery_fire_co_alarm_type', '1') %}
+                Fire Detected
+            {%- elif is_state('sensor.nursery_fire_co_alarm_type', '2') %}
+                Carbon Monoxide Detected
+            {%- elif is_state('sensor.nursery_fire_co_alarm_type', '12') %}
+                Alarm Testing
+            {% else %}
+                Unknown
+            {%- endif %}
+        friendly_name: 'Nursery Smoke/CO Alarm'
+      garage_multi_motion:
+        friendly_name: 'Garage Motion'
+        value_template: >-
+          {%- if is_state('sensor.living_room_multi_alarm_level', '0') -%}
+          off
+          {%- else -%}
+          on
+          {%- endif -%}
+  - platform: darksky
+    api_key: 0a46e964ab6aba053f77e7607ef56bc9
+    forecast: 1
+    monitored_conditions:
+      - temperature
+      - apparent_temperature
+      - temperature_min
+      - temperature_max
+      - humidity
+      - precip_probability
+      - precip_intensity
+      - precip_type
+      - wind_speed
+      - icon
+      - wind_bearing
+      - pressure

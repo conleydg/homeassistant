@@ -1,0 +1,162 @@
+#
+# Main arguments, all optional
+#
+title: Home Panel
+widget_dimensions: [120, 120]
+widget_margins: [5, 5]
+columns: 8
+scalable: True
+global_parameters:
+    use_comma: 0
+    precision: 1
+    use_hass_icon: 1
+    namespace: default
+
+
+label:
+    widget_type: label
+    text: Hello World
+
+front_door_camera:
+    widget_type: camera
+    entity_picture: !secret front_door_stream
+    refresh: 5
+
+back_door_camera:
+    widget_type: camera
+    entity_picture: !secret back_door_stream
+
+doorbell_camera:
+    title: Doorbell
+    widget_type: camera
+    entity_picture: !secret doorbell_camera_stream
+    refresh: 5
+
+driveway_camera:
+    widget_type: camera
+    entity_picture: !secret driveway_camera_stream
+    refresh: 5
+
+living_room_camera:
+    widget_type: camera
+    entity_picture: !secret living_camera_stream
+    refresh: 5
+
+foyer_camera:
+    widget_type: camera
+    entity_picture: !secret foyer_camera_stream
+    refresh: 5
+
+backdoor_camera:
+    widget_type: camera
+    entity_picture: !secret backdoor_camera_stream
+    refresh: 5
+
+living_room_dimmer:
+    widget_type: light
+    entity: light.level
+    title: Living Room Light
+    on_attributes:
+        brightness: 100
+
+living_motion:
+    widget_type: binary_sensor
+    title: Garage Motion
+    entity: sensor.garage_multi_motion
+
+fire:
+  widget_type: group
+  entity: group.fire
+
+garage_motion:
+    widget_type: binary_sensor
+    title: Living Motion
+    entity: binary_sensor.garage_motion_sensor
+
+dining_motion:
+    widget_type: binary_sensor
+    title: Dining Motion
+    entity: binary_sensor.dining_motion_sensor
+
+sliding_motion:
+    widget_type: binary_sensor
+    title: Sliding Motion
+    entity: binary_sensor.sliding_motion
+
+garage_doors:
+    widget_type: binary_sensor
+    title: Garage Doors
+    entity: group.garage_doors
+    icon_on: mdi-garage-open
+    icon_off: mdi-garage
+
+alarm_panel:
+    widget_type: alarm
+    entity: alarm_control_panel.partition_1
+    state: 1
+
+downstairs_led:
+    widget_type: light
+    title: Cabinet Lighting
+    entity: light.downstairs_led
+    icon_on: mdi-lamp
+    icon_off: mdi-lamp
+    on_attributes:
+      brightness: 200
+      rgb_color: 168,198,255
+
+front_lock:
+    widget_type: lock
+    entity: lock.schlage_be469nxcen_touchscreen_deadbolt_locked
+    title: Front Door Lock
+    state: 1
+
+front_door:
+    widget_type: binary_sensor
+    title: Front Door
+    entity: binary_sensor.front_door
+    icon_on: mdi-door-open
+    icon_off: mdi-door-closed
+
+sliding_door:
+    widget_type: binary_sensor
+    title: Sliding Door
+    entity: binary_sensor.sliding_door_sensor
+    icon_on: mdi-door-open
+    icon_off: mdi-door-closed
+
+weather:
+    widget_type: weather
+    units: "&deg;F"
+    show_forecast: 1
+    prefer_icons: 1
+    refresh: 300
+
+sleeping:
+  widget_type: input_boolean
+  title: Sleeping
+  entity: input_boolean.sleeping
+  icon_on: mdi-hotel
+  icon_off: mdi-hotel
+
+camera_status:
+    widget_type: input_boolean
+    entity: input_boolean.camera_status
+    title: Indoor Cameras
+
+emily_home:
+    widget_type: sensor
+    entity: sensor.emily_home
+    sub_entity: device_tracker.david_conleys_iphone
+
+david_home:
+    widget_type: sensor
+    entity: sensor.david_home
+    sub_entity: device_tracker.davids_iphone
+
+layout:
+    - front_door_camera(1x1), driveway_camera(1x1), foyer_camera(1x1), weather(2x2), climate.upstairs_thermostat_cooling_1, climate.downstairs_thermostat_cooling_1, camera_status
+    - backdoor_camera(1x1), living_room_camera(1x1), doorbell_camera, emily_home, david_home,  sensor.we_home
+    - living_motion, sliding_motion, dining_motion, garage_motion, sliding_door, front_door, front_lock, garage_doors
+    - alarm_panel, sleeping, switch.foyer_lamp, switch.foyer_light_switch, switch.dining_light_switch,  downstairs_led, living_room_dimmer, switch.living_room_lamp
+    - include: nav

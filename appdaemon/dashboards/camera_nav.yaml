@@ -1,0 +1,25 @@
+#
+# Main arguments, all optional
+#
+title: Camera Nav
+widget_dimensions: [120, 120]
+widget_margins: [5, 5]
+columns: 8
+global_parameters:
+    use_comma: 0
+    precision: 1
+    use_hass_icon: 1
+    namespace: default
+
+to_front_door:
+    widget_type: navigate
+    dashboard: front_door
+    title: Front Door
+
+to_back_door:
+    widget_type: navigate
+    dashboard: backdoor
+    title: Back Door
+
+layout:
+    - to_front_door, to_back_door

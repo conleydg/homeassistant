@@ -1,0 +1,60 @@
+#
+# Main arguments, all optional
+#
+title: Camera Panel
+widget_dimensions: [120, 120]
+widget_margins: [5, 5]
+columns: 8
+global_parameters:
+    use_comma: 0
+    precision: 1
+    use_hass_icon: 1
+    namespace: default
+
+front_door_camera:
+  widget_type: camera
+  entity_picture: !secret front_door_stream
+  refresh: 5
+
+back_door_camera:
+  widget_type: camera
+  entity_picture: !secret back_door_stream
+
+doorbell_still:
+  title: Doorbell
+  widget_type: camera
+  entity_picture: !secret doorbell_camera_stream
+  refresh: 5
+
+driveway_camera:
+  widget_type: camera
+  entity_picture: !secret driveway_camera_stream
+  refresh: 5
+
+living_room_camera:
+  widget_type: camera
+  entity_picture: !secret living_camera_stream
+  refresh: 5
+
+foyer_camera:
+  widget_type: camera
+  entity_picture: !secret foyer_camera_stream
+  refresh: 5
+
+backdoor_camera:
+  widget_type: camera
+  entity_picture: !secret backdoor_camera_stream
+  refresh: 5
+
+camera_status:
+    widget_type: input_boolean
+    entity: input_boolean.camera_status
+    title: Indoor Cameras
+
+layout:
+ - front_door_camera(2x2), driveway_camera(2x2), back_door_camera(2x2), camera_status
+ -
+ - living_room_camera(2x2), foyer_camera(2x2), doorbell_still(2x2)
+ -
+
+ - include: nav
